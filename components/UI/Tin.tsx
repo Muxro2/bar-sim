@@ -91,7 +91,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			x: "-30%",
 			rotate: 105,
 			transformOrigin: "top",
-			transition: { rotate: { duration: .5 }, x: { duration: 4 } }
+			transition: { rotate: { duration: .5 }, x: { duration: 2 } }
 			
 		}
 	}

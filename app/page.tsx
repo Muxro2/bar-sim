@@ -26,7 +26,7 @@ export default function Challenge() {
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 3) { // change shake time here
+		if (shakeCount == 10) { // change shake time here
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -175,10 +175,11 @@ export default function Challenge() {
 				</>
 			:
 
-			<button className="w-full h-full text-3xl"
+			<button className="w-full h-full "
 				style={{ 
 				userSelect: "none",
 				WebkitUserSelect: "none",
+				fontSize: `${isHolding ? 24+(shakeCount*6) : 24 }px`
 				}}
 				onTouchStart={() => handleShakeStart()}
 				onTouchEnd={() => handleShakeEnd()}
