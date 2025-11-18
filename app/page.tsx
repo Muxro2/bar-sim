@@ -37,7 +37,7 @@ export default function Challenge() {
 	}
 	
 	return (
-		<div className="w-full h-[100dvh] flex flex-col">
+		<div className="w-full h-[100dvh] flex flex-col overflow-hidden">
 
 		  {/* Background */}
 		  <div className="w-full h-[55%] bg-[#110101]">
@@ -68,7 +68,8 @@ export default function Challenge() {
 				{/* Tin */}
 				<Tin addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed}/>
 
-				{/* Tin Top */}
+				{!isMixed &&
+				/* Tin Top */
 				<motion.button 
 					className="absolute w-[20%] aspect-3/4 bg-neutral-400 clip-tin"
 					onClick={() => handleShake()}
@@ -76,6 +77,7 @@ export default function Challenge() {
 					animate={addedIce ? { right: '10%' } : {}}
 					transition={{ duration: 1 }}
 					/>
+				}
 			</div>
 
 			{/* Bar Interface */}

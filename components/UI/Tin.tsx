@@ -12,7 +12,7 @@ interface TinProps {
 }
 
 
-export default function Tin({addedIngredients, addedIce}: TinProps) {
+export default function Tin({addedIngredients, addedIce, isMixed}: TinProps) {
 	
 	
 	{/* Animations */}
@@ -22,12 +22,41 @@ export default function Tin({addedIngredients, addedIce}: TinProps) {
 		"bobbing": { height: `${1/addedIngredients.length*80}%`, y: [0,'1%',0], transition: { height: { duration: 2}, y: {repeat: Infinity}} }
 
 	}
+
+	const lidVariants = {
+		"initial": { opacity: 0, rotate: 180, y: "-120%"},
+		"close": { opacity: 1, y: "-100%", transition: { duration: 2 }},
+	}
+
+	const tinVariants = {
+		"initial": { width: "30vw" },
+		"shrink": { width: "18vw", transition: { duration: 2 } }
+	}
 	
 	return (
-		<div className="relative w-[30vw] aspect-2/3 bg-neutral-100 clip-tin">
-			{/* Inner tin */}
-			<div className="absolute inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse">
+		<motion.div className="relative w-[30vw] flex justify-center"
+		variants={tinVariants}
+			initial="initial"
+			animate={isMixed ? "shrink" : ""}
+			>
 
+		{isMixed &&
+		/* Lid */
+		<motion.div className="absolute w-[90%] aspect-3/4 bg-neutral-400 clip-tin"
+			variants={lidVariants}
+			initial="initial"
+			animate="close"
+			transition={{ duration: 1 }}
+			/>
+		}
+			
+		<div className="relative w-[100%] aspect-2/3 bg-neutral-100 clip-tin">
+
+			{!isMixed && 
+			/* Inner tin */
+			<div className="absolute top-0 inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse">
+
+				
 				{/* Liquid Layers */}
 				{addedIngredients?.map((name, index) => (
 					<motion.div
@@ -76,6 +105,8 @@ export default function Tin({addedIngredients, addedIce}: TinProps) {
 						})
 					}
 			</div>
+			}
 		</div>
+		</motion.div>
 	)
 }
