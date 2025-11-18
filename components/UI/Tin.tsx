@@ -11,14 +11,16 @@ interface TinProps {
 	addedIngredients: string[],
 	addedIce: boolean,
 	isMixed: boolean,
+	fillGlass: boolean,
 	setTinReset: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 
-export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed, setTinReset}: TinProps) {
+export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
   const [showLiquid, setShowLiquid] = useState(true)
 	
 	const tinControls = useAnimationControls()
+	const liquidControls = useAnimationControls()
 
   useEffect(() => {
 		async function shakeSequence() {
@@ -46,10 +48,24 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			await tinControls.start("initial", { duration: 1 })
 			setShowLiquid(true)
 			setTinReset(true)
+			tinControls.start({x: "20vw"})
 		}
 		}
 		resetTin()
 	}, [isMixed])
+
+	useEffect(() => {
+	  async function Strain() {
+			if (fillGlass) {
+				tinControls.start("pour")
+				await liquidControls.start("straining")
+				tinControls.start({left: "100%"})
+			}
+		}
+
+		Strain()
+		
+	}, [fillGlass])
 	
 	{/* Animations */}
 	const liquidVariants = {
@@ -69,8 +85,15 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			transition: { 
 				y: {repeat: Infinity}
 			}
+		},
+		"straining": {
+			width: "250%",
+			x: "-30%",
+			rotate: 105,
+			transformOrigin: "top",
+			transition: { rotate: { duration: .5 }, x: { duration: 4 } }
+			
 		}
-
 	}
 
 	const lidVariants = {
@@ -91,6 +114,11 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 				x: { repeat: Infinity, duration: .3 },
 			}
 		},
+		"pour": {
+			rotate: -105,
+			y: -150,
+			transition: { duration: .5}
+		}
 	}
 	
 	return (
@@ -115,7 +143,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 
 			{showLiquid && 
 			/* Inner tin */
-			<div className="absolute top-0 inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse">
+			<div className="absolute top-0 inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse items-center">
 
 				
 				{/* Liquid Layers */}
@@ -127,7 +155,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 								
 							}}
 							variants={liquidVariants}
-							animate="bobbingFull"
+							animate={liquidControls}
 						/>
 					: 
 				addedIngredients?.map((name, index) => (

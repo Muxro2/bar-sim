@@ -26,7 +26,7 @@ export default function Challenge() {
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 10) { // change shake time here
+		if (shakeCount == 3) { // change shake time here
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -114,11 +114,14 @@ export default function Challenge() {
 
 			
 			{/* Bar Top */}
-			<div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end gap-[10%]">
+			<motion.div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end gap-[10%]">
 
 				{phase=="glass" && tinReset &&
 				/* Glass */
-			  <button onClick={() => handleFill()}>
+			  <motion.button className="absolute"
+					initial={{ left: "-100%"}}
+					animate={fillGlass ? { left: "40%" } : { left: "20%" }}
+					onClick={() => handleFill()}>
         <Glass >
 					{fillGlass && 
 					<div className="absolute bottom-0 top-[6%] w-full bg-[#DDDD88]" >
@@ -126,12 +129,12 @@ export default function Challenge() {
 					</div>
 					}
 				</Glass>
-				</button>
+				</motion.button>
 				}
 				
-				{!fillGlass &&
+				{true &&
 					/* Tin */
-				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} setTinReset={setTinReset}/>
+				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
 					}
 					
 				{addedIce && (phase=="ice") &&
@@ -144,7 +147,7 @@ export default function Challenge() {
 					transition={{ duration: 1 }}
 					/>
 				}
-			</div>
+			</motion.div>
 
 			{/* Bar Interface */}
 			<div className="relative w-full flex-1 px-[5%] flex justify-between items-end">
