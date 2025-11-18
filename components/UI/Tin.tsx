@@ -10,11 +10,12 @@ interface TinProps {
 	isHolding: boolean,
 	addedIngredients: string[],
 	addedIce: boolean,
-	isMixed: boolean;
+	isMixed: boolean,
+	setTinReset: () => void,
 }
 
 
-export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed}: TinProps) {
+export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed, setTinReset}: TinProps) {
   const [showLiquid, setShowLiquid] = useState(true)
 	
 	const tinControls = useAnimationControls()
@@ -44,7 +45,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			await tinControls.start({rotate: 0, y:0, x:0})
 			await tinControls.start("initial", { duration: 1 })
 			setShowLiquid(true)
-			
+			setTinReset(true)
 		}
 		}
 		resetTin()

@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 import Bottle from '@/components/UI/Bottle'
 import Tin from '@/components/UI/Tin'
 import IceBucket from '@/components/UI/IceBucket'
-
+import Glass from '@/components/UI/Glass'
 
 import { drinks, ingredientColors } from '@/lib/drinks'
 
@@ -19,12 +19,14 @@ export default function Challenge() {
 	const [isMixed, setIsMixed] = useState(false)
 	const [isHolding, setIsHolding] = useState(false)
   const [shakeCount, setShakeCount] = useState(0)
-
+  const [tinReset, setTinReset] = useState(false)
+  const [fillGlass, setFillGlass] = useState(false)
+	
   const shakeInterval = useRef<NodeJS.Timeout | null>(null)
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 10) {
+		if (shakeCount == 10) { // change shake time here
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -79,6 +81,10 @@ export default function Challenge() {
 			shakeInterval.current = null
 		}
 	}
+
+	function handleFill() {
+		setFillGlass(true)
+	}
 	
 	return (
 		<div className="w-full h-[100dvh] flex flex-col overflow-hidden">
@@ -91,7 +97,7 @@ export default function Challenge() {
 				{Array.from({ length: 4 }, (_, i) => (
 			    <Image
 					key={i}
-					src="/bar-sim/coupe.svg"
+					src="/bar-sim/bgCoupe.svg"
 					alt="Glass"
 					width={0}
 					height={0}
@@ -108,10 +114,26 @@ export default function Challenge() {
 
 			
 			{/* Bar Top */}
-			<div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end">
-				{/* Tin */}
-				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed}/>
+			<div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end gap-[10%]">
 
+				{phase=="glass" && tinReset &&
+				/* Glass */
+			  <button onClick={() => handleFill()}>
+        <Glass >
+					{fillGlass && 
+					<div className="absolute bottom-0 top-[6%] w-full bg-[#DDDD88]" >
+						
+					</div>
+					}
+				</Glass>
+				</button>
+				}
+				
+				{!fillGlass &&
+					/* Tin */
+				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} setTinReset={setTinReset}/>
+					}
+					
 				{addedIce && (phase=="ice") &&
 				/* Tin Top */
 				<motion.button 
@@ -135,7 +157,7 @@ export default function Challenge() {
 					{/* Bottles */}
 					{drink.ingredients.map( (ing, i) => (
 			      <button key={i} className="w-[23%] h-[70%]" onClick={() => handleAddIngredient(ing.name)}>
-			      <Bottle caption="" color={ingredientColors[ing.name]}/>
+			      <Bottle caption={drink.ingredients[i].name} color={ingredientColors[ing.name]}/>
 						</button>
 					))}
 
@@ -150,7 +172,7 @@ export default function Challenge() {
 				</>
 			:
 
-			<button className="w-full h-full"
+			<button className="w-full h-full text-3xl"
 				style={{ 
 				userSelect: "none",
 				WebkitUserSelect: "none",
@@ -159,7 +181,7 @@ export default function Challenge() {
 				onTouchEnd={() => handleShakeEnd()}
 				>
 
-			Hold to shake. {shakeCount}
+			{isHolding ? `${shakeCount}` : "Hold to shake"}
 			</button>
 			
 			}
