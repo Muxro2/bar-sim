@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+;import { useState, useEffect } from 'react'
 import {motion, useAnimationControls } from 'framer-motion'
 
 import { ingredientColors } from '@/lib/drinks'
@@ -15,14 +15,16 @@ interface TinProps {
 
 
 export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed}: TinProps) {
+  const [showLiquid, setShowLiquid] = useState(true)
 	
 	const tinControls = useAnimationControls()
 
   useEffect(() => {
 		async function shakeSequence() {
+			setShowLiquid(false)
 		  await tinControls.start("shrink")
 			if (isHolding) {
-				await tinControls.start({rotate: [0,45], y:[0,-60], x:0, transition: { duration: .3 } })
+				await tinControls.start({rotate: [0,45], y:[0,-60], x:0, transition: { duration: .5 } })
 			  tinControls.start("shake")
 			} else {
 				tinControls.stop()
@@ -34,12 +36,39 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 		  shakeSequence()
 		}
 	}, [phase, isHolding])
+
+	useEffect(() => {
+		async function resetTin() {
+		if (isMixed) {
+			tinControls.stop()
+			await tinControls.start({rotate: 0, y:0, x:0})
+			await tinControls.start("initial", { duration: 1 })
+			setShowLiquid(true)
+			
+		}
+		}
+		resetTin()
+	}, [isMixed])
 	
 	{/* Animations */}
 	const liquidVariants = {
 		"hidden": { height: 0 },
 		"pouring": { height: '10%', transition: { duration: 2 }},
-		"bobbing": { height: `${1/addedIngredients.length*80}%`, y: [0,'1%',0], transition: { height: { duration: 2}, y: {repeat: Infinity}} }
+		"bobbing": { 
+			height: `${1/addedIngredients.length*80}%`,
+			y: [0,'1%',0],
+			transition: { 
+				height: { duration: 0},
+				y: {repeat: Infinity}
+			}
+		},
+    "bobbingFull": { 
+			height: `80%`,
+			y: [0,'1%',0],
+			transition: { 
+				y: {repeat: Infinity}
+			}
+		}
 
 	}
 
@@ -49,23 +78,23 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 	}
 
 	const tinVariants = {
-		"initial": { width: "30vw" },
+		"initial": { width: "30vw", rotate: 0, y: 0, x: 0 },
 		"shrink": { width: "16vw", transition: { duration: 1 } },
 		"shake": { 
 			rotate: [45,30,45],
 			y: [-60,-30,-60],
 			x: [0,-20,0],
 			transition: { 
-				rotate: { repeat: Infinity, duration: .4 },
-				y: { repeat: Infinity, duration: .4},
-				x: { repeat: Infinity, duration: .4 }
+				rotate: { repeat: Infinity, duration: .3, ease: "easeInOut" },
+				y: { repeat: Infinity, duration: .3},
+				x: { repeat: Infinity, duration: .3 },
 			}
 		},
 	}
 	
 	return (
 		<motion.div className="relative w-[30vw] flex justify-center origin-center"
-		variants={tinVariants}
+		  variants={tinVariants}
 			initial="initial"
 			animate={tinControls}
 			>
@@ -83,13 +112,24 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			
 		<div className="relative w-[100%] aspect-2/3 bg-neutral-100 clip-tin">
 
-			{!(phase=="shake") && 
+			{showLiquid && 
 			/* Inner tin */
 			<div className="absolute top-0 inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse">
 
 				
 				{/* Liquid Layers */}
-				{addedIngredients?.map((name, index) => (
+				{isMixed ? 
+						<motion.div
+							className="w-full h-[80%] translate-y-[3%]"
+							style={{
+								backgroundColor: "#dddd88",
+								
+							}}
+							variants={liquidVariants}
+							animate="bobbingFull"
+						/>
+					: 
+				addedIngredients?.map((name, index) => (
 					<motion.div
 						key={index}
 						className="w-full translate-y-[3%]"
@@ -121,10 +161,13 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 										height: `${size}%`,
 										bottom: startBottom,
 									}}
-									animate={{
+									animate={isMixed ? {
+										opacity: 1,
+										y: [0, 6, 0]               
+									}	: {
 										opacity: 1,
 										bottom: [`${startBottom}%`, `${endBottom}%`], // drop into the shaker
-										y: [0, 6, 0]                   // floating
+										y: [0, 6, 0]                 
 									}}
 									transition={{
 										opacity: { duration: 1 + Math.random() },

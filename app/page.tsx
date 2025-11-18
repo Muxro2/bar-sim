@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Bottle from '@/components/UI/Bottle'
 import Tin from '@/components/UI/Tin'
@@ -23,6 +23,21 @@ export default function Challenge() {
   const shakeInterval = useRef<NodeJS.Timeout | null>(null)
 	
 	{/* Functions */}
+  useEffect(() => {
+		if (shakeCount == 3) {
+			setIsHolding(false)
+
+			if (shakeInterval.current) {
+				clearInterval(shakeInterval.current)  
+				shakeInterval.current = null
+			}
+			
+			setIsMixed(true)
+			setPhase("glass")
+		}
+		
+	}, [shakeCount])
+	
   function handleAddIngredient(ingName: string) {
 		if (!addedIngredients.includes(ingName)) {
 			const updatedIngredients = [...addedIngredients, ingName]
