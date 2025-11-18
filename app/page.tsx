@@ -24,7 +24,7 @@ export default function Challenge() {
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 3) {
+		if (shakeCount == 10) {
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -68,7 +68,7 @@ export default function Challenge() {
 				return prev+1
 			})
 		}
-		, 1000)
+		, 750)
 	}
 
   function handleShakeEnd() {

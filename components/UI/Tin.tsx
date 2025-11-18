@@ -58,7 +58,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			height: `${1/addedIngredients.length*80}%`,
 			y: [0,'1%',0],
 			transition: { 
-				height: { duration: 0},
+				height: { duration: 1 },
 				y: {repeat: Infinity}
 			}
 		},
@@ -85,7 +85,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 			y: [-60,-30,-60],
 			x: [0,-20,0],
 			transition: { 
-				rotate: { repeat: Infinity, duration: .3, ease: "easeInOut" },
+				rotate: { repeat: Infinity, duration: .3 },
 				y: { repeat: Infinity, duration: .3},
 				x: { repeat: Infinity, duration: .3 },
 			}
