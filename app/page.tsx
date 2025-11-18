@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import Bottle from '@/components/UI/Bottle'
 import Tin from '@/components/UI/Tin'
@@ -13,27 +13,56 @@ import { drinks, ingredientColors } from '@/lib/drinks'
 
 export default function Challenge() {
 	const [drink, setDrink] = useState(drinks[0])
-
 	const [phase, setPhase] = useState("ingredients")
 	const [addedIngredients, setAddedIngredients] = useState<string[]>([])
 	const [addedIce, setAddedIce] = useState(false)
 	const [isMixed, setIsMixed] = useState(false)
+	const [isHolding, setIsHolding] = useState(false)
+  const [shakeCount, setShakeCount] = useState(0)
 
+  const shakeInterval = useRef<NodeJS.Timeout | null>(null)
+	
 	{/* Functions */}
   function handleAddIngredient(ingName: string) {
 		if (!addedIngredients.includes(ingName)) {
-		setAddedIngredients([...addedIngredients, ingName])
-		}
+			const updatedIngredients = [...addedIngredients, ingName]
+		  setAddedIngredients(updatedIngredients)
+			if (updatedIngredients.length == drink.ingredients.length) {
+					setPhase("ice")
+			}
+		} 
 	}
 
 	function handleAddIce() {
-		if (addedIngredients.length == drink.ingredients.length) {
-	  	setAddedIce(true)
+		if (phase == "ice") {
+			setAddedIce(true)
 		}
 	}
 
-  function handleShake() {
-	  	setIsMixed(true)
+  function handleClose() {
+		setPhase("shake")
+	}
+
+	function handleShakeStart() {
+		setIsHolding(true)
+
+		if (shakeInterval.current) return 
+		
+		shakeInterval.current = setInterval(() => {
+			setShakeCount((prev) => {
+				return prev+1
+			})
+		}
+		, 1000)
+	}
+
+  function handleShakeEnd() {
+		setIsHolding(false)
+
+		if (shakeInterval.current) {
+			clearTimeout(shakeInterval.current)
+			shakeInterval.current = null
+		}
 	}
 	
 	return (
@@ -66,13 +95,13 @@ export default function Challenge() {
 			{/* Bar Top */}
 			<div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end">
 				{/* Tin */}
-				<Tin addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed}/>
+				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed}/>
 
-				{!isMixed &&
+				{addedIce && (phase=="ice") &&
 				/* Tin Top */
 				<motion.button 
 					className="absolute w-[20%] aspect-3/4 bg-neutral-400 clip-tin"
-					onClick={() => handleShake()}
+					onClick={() => handleClose()}
 					initial={{ right: '-20%' }}
 					animate={addedIce ? { right: '10%' } : {}}
 					transition={{ duration: 1 }}
@@ -82,7 +111,10 @@ export default function Challenge() {
 
 			{/* Bar Interface */}
 			<div className="relative w-full flex-1 px-[5%] flex justify-between items-end">
-				{/* Speed Rail */}
+
+				{!(phase=="shake") ? 
+				<>
+					{/* Speed Rail */}
 			  <div className="relative w-[60%] h-[80%] flex gap-[1%]">
 					
 					{/* Bottles */}
@@ -96,14 +128,28 @@ export default function Challenge() {
 					
 				</div>
 				
-				{/* Ice Bucket */}
+					{/* Ice Bucket */}
 				<button className="w-[35%] h-[80%]" onClick={() => handleAddIce()}>
 				  <IceBucket />
 				</button>
+				</>
+			:
 
-				
-			</div>
+			<button className="w-full h-full"
+				style={{ 
+				userSelect: "none",
+				WebkitUserSelect: "none",
+				}}
+				onTouchStart={() => handleShakeStart()}
+				onTouchEnd={() => handleShakeEnd()}
+				>
+
+			Hold to shake. {shakeCount}
+			</button>
 			
+			}
+			</div>
+		
 		</div>
 	)
 }

@@ -1,19 +1,39 @@
-
-import {motion} from 'framer-motion'
+import { useState, useEffect } from 'react'
+import {motion, useAnimationControls } from 'framer-motion'
 
 import { ingredientColors } from '@/lib/drinks'
 
 
 {/* Types */}
 interface TinProps {
+	phase:string,
+	isHolding: boolean,
 	addedIngredients: string[],
 	addedIce: boolean,
 	isMixed: boolean;
 }
 
 
-export default function Tin({addedIngredients, addedIce, isMixed}: TinProps) {
+export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed}: TinProps) {
 	
+	const tinControls = useAnimationControls()
+
+  useEffect(() => {
+		async function shakeSequence() {
+		  await tinControls.start("shrink")
+			if (isHolding) {
+				await tinControls.start({rotate: [0,45], y:[0,-60], x:0, transition: { duration: .3 } })
+			  tinControls.start("shake")
+			} else {
+				tinControls.stop()
+				tinControls.start({rotate: 0, y:0, x:0})
+			}
+		}
+
+		if (phase=="shake") {
+		  shakeSequence()
+		}
+	}, [phase, isHolding])
 	
 	{/* Animations */}
 	const liquidVariants = {
@@ -25,34 +45,45 @@ export default function Tin({addedIngredients, addedIce, isMixed}: TinProps) {
 
 	const lidVariants = {
 		"initial": { opacity: 0, rotate: 180, y: "-120%"},
-		"close": { opacity: 1, y: "-100%", transition: { duration: 2 }},
+		"close": { opacity: 1, y: "-100%", transition: { duration: 1 }},
 	}
 
 	const tinVariants = {
 		"initial": { width: "30vw" },
-		"shrink": { width: "18vw", transition: { duration: 2 } }
+		"shrink": { width: "16vw", transition: { duration: 1 } },
+		"shake": { 
+			rotate: [45,30,45],
+			y: [-60,-30,-60],
+			x: [0,-20,0],
+			transition: { 
+				rotate: { repeat: Infinity, duration: .4 },
+				y: { repeat: Infinity, duration: .4},
+				x: { repeat: Infinity, duration: .4 }
+			}
+		},
 	}
 	
 	return (
-		<motion.div className="relative w-[30vw] flex justify-center"
+		<motion.div className="relative w-[30vw] flex justify-center origin-center"
 		variants={tinVariants}
 			initial="initial"
-			animate={isMixed ? "shrink" : ""}
+			animate={tinControls}
 			>
 
-		{isMixed &&
+		{(phase=="shake") &&
 		/* Lid */
 		<motion.div className="absolute w-[90%] aspect-3/4 bg-neutral-400 clip-tin"
 			variants={lidVariants}
 			initial="initial"
 			animate="close"
 			transition={{ duration: 1 }}
+			
 			/>
 		}
 			
 		<div className="relative w-[100%] aspect-2/3 bg-neutral-100 clip-tin">
 
-			{!isMixed && 
+			{!(phase=="shake") && 
 			/* Inner tin */
 			<div className="absolute top-0 inset-[1%] bg-neutral-800 clip-tin flex flex-col-reverse">
 
