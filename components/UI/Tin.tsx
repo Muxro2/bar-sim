@@ -11,7 +11,7 @@ interface TinProps {
 	addedIngredients: string[],
 	addedIce: boolean,
 	isMixed: boolean,
-	setTinReset: () => void,
+	setTinReset: void,
 }
 
 
