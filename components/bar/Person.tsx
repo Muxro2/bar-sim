@@ -1,3 +1,5 @@
+
+
 import { motion, Variants, useAnimationControls } from 'framer-motion'
 import { useEffect } from 'react'
 
@@ -7,35 +9,41 @@ export default function Person() {
 	
 	useEffect(() => {
 		async function walkPerson() {
+			function sleep(ms: number) {
+				return new Promise(resolve => setTimeout(resolve, ms));
+			}
+				
 			while (true) {
-			
-			await personController.start("walking")
-			personController.stop()
-			await personController.start("walkingBack")
+				await sleep(Math.random()*12000)
+				await personController.start("walking")
+				await sleep(Math.random()*10000)
+				await personController.start("walkingBack")
+				await sleep(Math.random()*12000)
 			}
 		}
+		
 		walkPerson()
 	}, [])
 
   const variants: Variants = {
 		"initial": {
-			x: "-20vw"
+			left: "-25%"
 		},
 		"walking": {
-			x: "110vw",
+			left: "100%",
 			y: [0,5,0],
 			transition: {
-				x: { duration: 5, ease: "linear" },
-				y: { repeat: 16, duration: .5 },
+				left: { duration: 5, ease: "linear" },
+				y: { repeat: 9, duration: .5 },
 				
 			},
 		},
 		"walkingBack": {
-			x: "-20vw",
+			left: "-25%",
 			y: [0,5,0],
 			transition: {
-				x: { duration: 5, ease: "linear" },
-				y: { repeat: 14, duration: .5 },
+				left: { duration: 5, ease: "linear" },
+				y: { repeat: 9, duration: .5 },
 				
 		  },
 		}

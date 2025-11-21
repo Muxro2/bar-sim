@@ -1,7 +1,7 @@
 ;import { useState, useEffect } from 'react'
 import {motion, useAnimationControls } from 'framer-motion'
 
-import { ingredientColors } from '@/lib/drinks'
+import { ingredientData } from '@/lib/drinks'
 
 import { Ingredient } from '@/types/drinkTypes'
 
@@ -162,9 +162,9 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 				addedIngredients?.map((ing, index) => (
 					<motion.div
 						key={index}
-						className="w-full translate-y-2"
+						className="w-full"
 						style={{
-							backgroundColor: ingredientColors[ing.name]
+							backgroundColor: ingredientData.find(dataIng => dataIng.name === ing.name)?.color
 						}}
 						variants={liquidVariants}
 						initial={{ height: 0 }}

@@ -4,23 +4,22 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
 
-import Person from '@/components/UI/Person'
-import Person2 from '@/components/UI/Person2'
+import BarBack from '@/components/layout/BarBack'
 
-import Bottle from '@/components/UI/Bottle'
-import Tin from '@/components/UI/Tin'
-import IceBucket from '@/components/UI/IceBucket'
-import Glass from '@/components/UI/Glass'
-import CustomConsole from '@/components/Development/CustomConsole'
-
+import Bottle from '@/components/bar/Bottle'
+import Tin from '@/components/bar/Tin'
+import IceBucket from '@/components/bar/IceBucket'
+import Glass from '@/components/bar/Glass'
+import CustomConsole from '@/components/dev/CustomConsole'
 
 
-import { drinks, ingredientColors } from '@/lib/drinks'
+
+import { drinks, ingredientData } from '@/lib/drinks'
 
 import { Ingredient } from '@/types/drinkTypes'
 
 export default function Challenge() {
-	const [drink, setDrink] = useState(drinks[0])
+	const [drink, setDrink] = useState(drinks[1])
 	const [phase, setPhase] = useState("ingredients")
 	const [addedIngredients, setAddedIngredients] = useState<Ingredient[]>([])
 	const [addedIce, setAddedIce] = useState(false)
@@ -135,35 +134,11 @@ export default function Challenge() {
 			))}
 			</CustomConsole>
 			
-		  {/* Background */}
-		  <div className="relative w-full h-[55%] bg-[#110101]">
-
-				{/* Glass Rack */}
-				<div className="w-full h-[30%] -translate-y-[5%] flex justify-center gap-[1%]">
-				{Array.from({ length: 4 }, (_, i) => (
-			    <Image
-					key={i}
-					src="/bar-sim/bgCoupe.svg"
-					alt="Glass"
-					width={0}
-					height={0}
-					className="w-[24%] h-full rotate-180"
-				  />
-				))}
-				</div>
-
-				{/* Shelves */}
-				<div className=" w-[80%] h-2 mx-auto mt-12 bg-[#210101]"></div>
-				<div className=" w-[70%] h-2 mx-auto mt-15 bg-[#210101]"></div>
-
-        {/* Person */}
-        <Person />
-				<Person2 />
-			</div>
+			<BarBack />
 
 			
 			{/* Bar Top */}
-			<motion.div className="relative w-full h-[10%] pb-[5%] bg-[#310101] flex justify-center items-end gap-[10%]">
+			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#310101] flex justify-center items-end gap-[10%]">
 
 				{phase=="glass" && tinReset &&
 				/* Glass */
@@ -209,7 +184,7 @@ export default function Challenge() {
 					{/* Bottles */}
 					{drink.ingredients.map( (ing, i) => (
 			      <button key={i} className="w-[23%] h-[70%]" onClick={() => handleAddIngredient(ing.name)}>
-			      <Bottle caption={drink.ingredients[i].name} color={ingredientColors[ing.name]}/>
+			      <Bottle caption={drink.ingredients[i].name}/>
 						</button>
 					))}
 
