@@ -71,7 +71,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 	{/* Animations */}
 	const liquidVariants = {
 		"hidden": { height: 0 },
-		"pouring": { height: '10%', transition: { duration: 2 }},
+		"pouring": { height: '10%', transition: { duration: .5 }},
 		"bobbing": { 
 			height: `${1/addedIngredients.length*80}%`,
 			y: [0,'1%',0],

@@ -4,11 +4,16 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
 
+import Person from '@/components/UI/Person'
+import Person2 from '@/components/UI/Person2'
+
 import Bottle from '@/components/UI/Bottle'
 import Tin from '@/components/UI/Tin'
 import IceBucket from '@/components/UI/IceBucket'
 import Glass from '@/components/UI/Glass'
 import CustomConsole from '@/components/Development/CustomConsole'
+
+
 
 import { drinks, ingredientColors } from '@/lib/drinks'
 
@@ -131,7 +136,7 @@ export default function Challenge() {
 			</CustomConsole>
 			
 		  {/* Background */}
-		  <div className="w-full h-[55%] bg-[#110101]">
+		  <div className="relative w-full h-[55%] bg-[#110101]">
 
 				{/* Glass Rack */}
 				<div className="w-full h-[30%] -translate-y-[5%] flex justify-center gap-[1%]">
@@ -150,7 +155,10 @@ export default function Challenge() {
 				{/* Shelves */}
 				<div className=" w-[80%] h-2 mx-auto mt-12 bg-[#210101]"></div>
 				<div className=" w-[70%] h-2 mx-auto mt-15 bg-[#210101]"></div>
-				
+
+        {/* Person */}
+        <Person />
+				<Person2 />
 			</div>
 
 			
