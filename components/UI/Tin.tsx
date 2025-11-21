@@ -3,12 +3,13 @@ import {motion, useAnimationControls } from 'framer-motion'
 
 import { ingredientColors } from '@/lib/drinks'
 
+import { Ingredient } from '@/types/drinkTypes'
 
 {/* Types */}
 interface TinProps {
 	phase:string,
 	isHolding: boolean,
-	addedIngredients: string[],
+	addedIngredients: Ingredient[],
 	addedIce: boolean,
 	isMixed: boolean,
 	fillGlass: boolean,
@@ -158,16 +159,25 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 							animate={liquidControls}
 						/>
 					: 
-				addedIngredients?.map((name, index) => (
+				addedIngredients?.map((ing, index) => (
 					<motion.div
 						key={index}
-						className="w-full translate-y-[3%]"
+						className="w-full translate-y-2"
 						style={{
-							backgroundColor: ingredientColors[name]
+							backgroundColor: ingredientColors[ing.name]
 						}}
 						variants={liquidVariants}
 						initial={{ height: 0 }}
-						animate={addedIce? "bobbing" : "pouring"}
+						animate={addedIce? 
+							{ 
+								height: `${ing.amount/1.2}%`,
+								y: [0,'1%',0],
+								transition: { 
+									height: { duration: 1 },
+									y: {repeat: Infinity}
+								}
+							} 
+						: { height: `${ing.amount/2.5}%`, transition: { duration: 2 }} }
 					/>
 				))}
 

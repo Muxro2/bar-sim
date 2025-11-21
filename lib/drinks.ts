@@ -5,9 +5,9 @@ export const drinks = [
 			method: "shake",
 			glass: "🍸",
 			ingredients: [
-				{"name": "Tequila", "amount": "50ml" },
-				{"name": "Triple Sec", "amount": "25ml" },
-				{"name": "Lime Juice", "amount": "25ml" }
+				{"name": "Tequila", "amount": 50 },
+				{"name": "Triple Sec", "amount": 25 },
+				{"name": "Lime Juice", "amount": 25 }
 			]
 		}
 	]

@@ -8,13 +8,16 @@ import Bottle from '@/components/UI/Bottle'
 import Tin from '@/components/UI/Tin'
 import IceBucket from '@/components/UI/IceBucket'
 import Glass from '@/components/UI/Glass'
+import CustomConsole from '@/components/Development/CustomConsole'
 
 import { drinks, ingredientColors } from '@/lib/drinks'
+
+import { Ingredient } from '@/types/drinkTypes'
 
 export default function Challenge() {
 	const [drink, setDrink] = useState(drinks[0])
 	const [phase, setPhase] = useState("ingredients")
-	const [addedIngredients, setAddedIngredients] = useState<string[]>([])
+	const [addedIngredients, setAddedIngredients] = useState<Ingredient[]>([])
 	const [addedIce, setAddedIce] = useState(false)
 	const [isMixed, setIsMixed] = useState(false)
 	const [isHolding, setIsHolding] = useState(false)
@@ -40,14 +43,46 @@ export default function Challenge() {
 		
 	}, [shakeCount])
 	
-  function handleAddIngredient(ingName: string) {
-		if (!addedIngredients.includes(ingName)) {
-			const updatedIngredients = [...addedIngredients, ingName]
-		  setAddedIngredients(updatedIngredients)
-			if (updatedIngredients.length == drink.ingredients.length) {
-					setPhase("ice")
+	function handleAddIngredient(ingName: string) {
+		const drinkIngredient = drink.ingredients.find(ing => ing.name === ingName);
+
+		if (!drinkIngredient) return;
+
+		const existing = addedIngredients.find(ing => ing.name === ingName);
+
+		let updatedIngredients: Ingredient[];
+
+		if (existing) {
+			const newAmount = existing.amount + 25;
+
+			if (newAmount > drinkIngredient.amount) {
+				return;
 			}
-		} 
+
+			updatedIngredients = addedIngredients.map(ing =>
+				ing.name === ingName ? { ...ing, amount: newAmount } : ing
+			);
+			
+		} else {
+			
+			
+			if (drinkIngredient.amount < 25) {
+				return;
+			}
+
+			updatedIngredients = [...addedIngredients, { name: ingName, amount: 25 }];
+		}
+
+		setAddedIngredients(updatedIngredients);
+
+		// Check if all ingredients have at least the required amount
+		const allComplete = drink.ingredients.every(ing =>
+			updatedIngredients.some(ai => ai.name === ing.name && ai.amount >= ing.amount)
+		);
+
+		if (allComplete) {
+			setPhase("ice");
+		}
 	}
 
 	function handleAddIce() {
@@ -89,6 +124,12 @@ export default function Challenge() {
 	return (
 		<div className="w-full h-[100dvh] flex flex-col overflow-hidden">
 
+			<CustomConsole open={false}>
+			{addedIngredients.map((ing) => (
+			ing.name + ":" + ing.amount + ";  "
+			))}
+			</CustomConsole>
+			
 		  {/* Background */}
 		  <div className="w-full h-[55%] bg-[#110101]">
 
