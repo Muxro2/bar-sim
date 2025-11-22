@@ -36,7 +36,7 @@ export default function Challenge() {
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 3) { // change shake time here
+		if (shakeCount == 8) { // change shake time here
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -69,6 +69,7 @@ export default function Challenge() {
 			updatedIngredients = addedIngredients.map(ing =>
 				ing.name === ingName ? { ...ing, amount: newAmount } : ing
 			);
+
 			
 		} else {
 			
@@ -223,16 +224,18 @@ export default function Challenge() {
 				{!(phase=="shake") ? 
 				<>
 					{/* Speed Rail */}
-			  <div className="relative w-[60%] h-[80%] flex gap-[1%]">
+			  <div className="relative w-[60%] h-[80%] mb-[5%] flex items-end gap-[1%]">
 					
 					{/* Bottles */}
 					{drink?.ingredients.map( (ing, i) => (
-			      <button key={i} className="w-[23%] h-[70%]" onClick={() => handleAddIngredient(ing.name)}>
+			      <button key={i} className="w-[23%] mb-[20%]"
+							style={addedIngredients.find((i) => i.name === ing.name)?.amount===drink.ingredients.find((i) => i.name === ing.name)?.amount ? {height:"50%"} : {height:"70%"}}
+							onClick={() => handleAddIngredient(ing.name)}>
 			      <Bottle caption={drink.ingredients[i].name}/>
 						</button>
 					))}
 
-					<div className="absolute w-full h-[30%] bottom-[5%] bg-[#310101] rounded-[0%_0%_10px_10px] flex" />
+					<div className="absolute w-full h-[30%] bg-[#310101] rounded-[0%_0%_10px_10px] flex" />
 					
 				</div>
 				
