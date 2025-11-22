@@ -5,9 +5,12 @@ import { ingredientData } from '@/lib/drinks'
 
 import { Drink, Ingredient } from '@/types/drinkTypes'
 
+import {barStore} from '@/stores/barStore'
+
 {/* Types */}
 interface TinProps {
-	drink: Drink,
+	toggleReset: boolean,
+	setToggleReset: React.Dispatch<React.SetStateAction<boolean>>,
 	phase: string,
 	isHolding: boolean,
 	addedIngredients: Ingredient[],
@@ -18,12 +21,27 @@ interface TinProps {
 }
 
 
-export default function Tin({ drink, phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
-  const [showLiquid, setShowLiquid] = useState(true)
+export default function Tin({ toggleReset, setToggleReset, phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
+  const BarStore = barStore()
+	
+	const [showLiquid, setShowLiquid] = useState(true)
 	
 	const tinControls = useAnimationControls()
 	const liquidControls = useAnimationControls()
 
+  useEffect(() => {
+		async function replaceTin() {
+			await tinControls.start({opacity: 0, y: 10})
+			tinControls.set("initial")
+			tinControls.set({y: 10})
+			await tinControls.start({opacity: 1, y: 0, transition:{duration: .5}})
+		}
+		if (toggleReset) {
+		 replaceTin()
+		 setToggleReset(false)
+		}
+	}, [toggleReset])
+	
   useEffect(() => {
 		async function shakeSequence() {
 			setShowLiquid(false)
@@ -39,10 +57,7 @@ export default function Tin({ drink, phase, isHolding, addedIngredients, addedIc
 
 		if (phase=="shake") {
 		  shakeSequence()
-		} else {
-			setShowLiquid(true)
-			tinControls.start("initial", { duration: 1 })
-		}
+		} 
 
 	}, [phase, isHolding])
 
@@ -50,16 +65,12 @@ export default function Tin({ drink, phase, isHolding, addedIngredients, addedIc
 		async function resetTin() {
 		if (isMixed) {
 			tinControls.stop()
-			await tinControls.start({rotate: 0, y:0, x:0})
+			await tinControls.start({rotate: 0, y:0, x:0, transition: {duration: 1}})
 			await tinControls.start({width: "30vw", transition: { duration: 1 }})
 			setShowLiquid(true)
 			setTinReset(true)
 			tinControls.start({x: "20vw"})
-		} else {
-			tinControls.set("initial")
-		  
-		}
-		}
+		}}
 		resetTin()
 	}, [isMixed])
 
@@ -69,9 +80,7 @@ export default function Tin({ drink, phase, isHolding, addedIngredients, addedIc
 				tinControls.start("pour")
 				await liquidControls.start("straining")
 				tinControls.start({left: "100%"})
-			} else {
-				tinControls.set({left: 0})
-			}
+			} 
 		}
 
 		Strain()
@@ -113,7 +122,7 @@ export default function Tin({ drink, phase, isHolding, addedIngredients, addedIc
 	}
 
 	const tinVariants = {
-		"initial": { width: "30vw", rotate: 0, y: 0, x: 0 },
+		"initial": { width: "30vw", rotate: 0, y: 0, x: 0, left: 0 },
 		"shrink": { width: "16vw", transition: { duration: 1 } },
 		"shake": { 
 			rotate: [45,30,45],
@@ -162,7 +171,7 @@ export default function Tin({ drink, phase, isHolding, addedIngredients, addedIc
 						<motion.div
 							className="w-full h-[80%] translate-y-[3%]"
 							style={{
-								backgroundColor: drink.color,
+								backgroundColor: BarStore.drink.color,
 								
 							}}
 							variants={liquidVariants}

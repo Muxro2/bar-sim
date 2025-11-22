@@ -22,6 +22,7 @@ export default function Challenge() {
   const BarStore = barStore()
 	
 	const drink = BarStore.drink
+	const [toggleReset, setToggleReset] = useState(false)
 	const [phase, setPhase] = useState("ingredients")
 	const [addedIngredients, setAddedIngredients] = useState<Ingredient[]>([])
 	const [addedIce, setAddedIce] = useState(false)
@@ -35,7 +36,7 @@ export default function Challenge() {
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 10) { // change shake time here
+		if (shakeCount == 3) { // change shake time here
 			setIsHolding(false)
 
 			if (shakeInterval.current) {
@@ -128,6 +129,7 @@ export default function Challenge() {
 	}
 
   function handleReset() {
+		setToggleReset(true)
 		setPhase("ingredients")
 		setAddedIngredients([])
 		setAddedIce(false)
@@ -200,7 +202,7 @@ export default function Challenge() {
 				
 				{true &&
 					/* Tin */
-				<Tin drink={drink} phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
+				<Tin toggleReset={toggleReset} setToggleReset={setToggleReset} phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
 					}
 					
 				{addedIce && (phase=="ice") &&
