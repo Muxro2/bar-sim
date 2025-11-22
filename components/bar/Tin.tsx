@@ -3,11 +3,12 @@ import {motion, useAnimationControls } from 'framer-motion'
 
 import { ingredientData } from '@/lib/drinks'
 
-import { Ingredient } from '@/types/drinkTypes'
+import { Drink, Ingredient } from '@/types/drinkTypes'
 
 {/* Types */}
 interface TinProps {
-	phase:string,
+	drink: Drink,
+	phase: string,
 	isHolding: boolean,
 	addedIngredients: Ingredient[],
 	addedIce: boolean,
@@ -17,7 +18,7 @@ interface TinProps {
 }
 
 
-export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
+export default function Tin({ drink, phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
   const [showLiquid, setShowLiquid] = useState(true)
 	
 	const tinControls = useAnimationControls()
@@ -38,7 +39,11 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 
 		if (phase=="shake") {
 		  shakeSequence()
+		} else {
+			setShowLiquid(true)
+			tinControls.start("initial", { duration: 1 })
 		}
+
 	}, [phase, isHolding])
 
 	useEffect(() => {
@@ -46,10 +51,13 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 		if (isMixed) {
 			tinControls.stop()
 			await tinControls.start({rotate: 0, y:0, x:0})
-			await tinControls.start("initial", { duration: 1 })
+			await tinControls.start({width: "30vw", transition: { duration: 1 }})
 			setShowLiquid(true)
 			setTinReset(true)
 			tinControls.start({x: "20vw"})
+		} else {
+			tinControls.set("initial")
+		  
 		}
 		}
 		resetTin()
@@ -61,6 +69,8 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 				tinControls.start("pour")
 				await liquidControls.start("straining")
 				tinControls.start({left: "100%"})
+			} else {
+				tinControls.set({left: 0})
 			}
 		}
 
@@ -152,7 +162,7 @@ export default function Tin({ phase, isHolding, addedIngredients, addedIce, isMi
 						<motion.div
 							className="w-full h-[80%] translate-y-[3%]"
 							style={{
-								backgroundColor: "#dddd88",
+								backgroundColor: drink.color,
 								
 							}}
 							variants={liquidVariants}

@@ -12,14 +12,16 @@ import IceBucket from '@/components/bar/IceBucket'
 import Glass from '@/components/bar/Glass'
 import CustomConsole from '@/components/dev/CustomConsole'
 
-
+import { barStore } from '@/stores/barStore'
 
 import { drinks, ingredientData } from '@/lib/drinks'
 
-import { Ingredient } from '@/types/drinkTypes'
+import { Drink, Ingredient } from '@/types/drinkTypes'
 
 export default function Challenge() {
-	const [drink, setDrink] = useState(drinks[1])
+  const BarStore = barStore()
+	
+	const drink = BarStore.drink
 	const [phase, setPhase] = useState("ingredients")
 	const [addedIngredients, setAddedIngredients] = useState<Ingredient[]>([])
 	const [addedIce, setAddedIce] = useState(false)
@@ -124,18 +126,55 @@ export default function Challenge() {
 	function handleFill() {
 		setFillGlass(true)
 	}
+
+  function handleReset() {
+		setPhase("ingredients")
+		setAddedIngredients([])
+		setAddedIce(false)
+		setIsMixed(false)
+		setIsHolding(false)
+		setShakeCount(0)
+		setTinReset(false)
+		setFillGlass(false)
+	}
+
+  function changeDrink(changeTo: string) {
+		if (!(changeTo === drink?.id)) {
+			handleReset()
+			BarStore.setDrink(drinks[drinks.findIndex((drk) => (
+				drk.id === changeTo
+			))])
+		}
+	}
 	
 	return (
 		<div className="w-full h-[100dvh] flex flex-col overflow-hidden">
 
+     
+			
 			<CustomConsole open={false}>
-			{addedIngredients.map((ing) => (
-			ing.name + ":" + ing.amount + ";  "
-			))}
 			</CustomConsole>
 			
 			<BarBack />
 
+			<div className="absolute w-full h-10 flex justify-between">
+			<button className=""
+				onClick={() => handleReset()}>
+				reset
+			</button>
+			<button className=""
+				onClick={() => changeDrink("margarita")}>
+				Margarita
+			</button>
+			<button className=""
+				onClick={() => changeDrink("daiquiri")}>
+				Daquiri
+			</button>
+							<button className=""
+				onClick={() => changeDrink("sidecar")}>
+				Sidecar
+			</button>
+		</div>
 			
 			{/* Bar Top */}
 			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#310101] flex justify-center items-end gap-[10%]">
@@ -148,7 +187,10 @@ export default function Challenge() {
 					onClick={() => handleFill()}>
         <Glass >
 					{fillGlass && 
-					<div className="absolute bottom-0 top-[6%] w-full bg-[#DDDD88]" >
+					<div className="absolute bottom-0 top-[6%] w-full"
+						style={{
+							backgroundColor: drink.color
+						}}>
 						
 					</div>
 					}
@@ -158,7 +200,7 @@ export default function Challenge() {
 				
 				{true &&
 					/* Tin */
-				<Tin phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
+				<Tin drink={drink} phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
 					}
 					
 				{addedIce && (phase=="ice") &&
@@ -182,7 +224,7 @@ export default function Challenge() {
 			  <div className="relative w-[60%] h-[80%] flex gap-[1%]">
 					
 					{/* Bottles */}
-					{drink.ingredients.map( (ing, i) => (
+					{drink?.ingredients.map( (ing, i) => (
 			      <button key={i} className="w-[23%] h-[70%]" onClick={() => handleAddIngredient(ing.name)}>
 			      <Bottle caption={drink.ingredients[i].name}/>
 						</button>
