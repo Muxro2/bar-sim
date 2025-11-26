@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from 'react'
 
 import BarBack from '@/components/layout/BarBack'
 
+import GlassButton from '@/components/ui/GlassButton'
+
 import Bottle from '@/components/bar/Bottle'
 import Tin from '@/components/bar/Tin'
 import IceBucket from '@/components/bar/IceBucket'
@@ -21,41 +23,30 @@ import { Drink, Ingredient } from '@/types/drinkTypes'
 export default function Challenge() {
   const BarStore = barStore()
 	
-	const drink = BarStore.drink
-	const [toggleReset, setToggleReset] = useState(false)
-	const [phase, setPhase] = useState("ingredients")
-	const [addedIngredients, setAddedIngredients] = useState<Ingredient[]>([])
-	const [addedIce, setAddedIce] = useState(false)
-	const [isMixed, setIsMixed] = useState(false)
-	const [isHolding, setIsHolding] = useState(false)
-  const [shakeCount, setShakeCount] = useState(0)
-  const [tinReset, setTinReset] = useState(false)
-  const [fillGlass, setFillGlass] = useState(false)
-	
   const shakeInterval = useRef<NodeJS.Timeout | null>(null)
 	
 	{/* Functions */}
   useEffect(() => {
-		if (shakeCount == 8) { // change shake time here
-			setIsHolding(false)
+		if (BarStore.shakeCount == 8) { // change shake time here
+			BarStore.setIsHolding(false)
 
 			if (shakeInterval.current) {
 				clearInterval(shakeInterval.current)  
 				shakeInterval.current = null
 			}
 			
-			setIsMixed(true)
-			setPhase("glass")
+			BarStore.setIsMixed(true)
+			BarStore.setPhase("glass")
 		}
 		
-	}, [shakeCount])
+	}, [BarStore.shakeCount])
 	
 	function handleAddIngredient(ingName: string) {
-		const drinkIngredient = drink.ingredients.find(ing => ing.name === ingName);
+		const drinkIngredient = BarStore.drink.ingredients.find(ing => ing.name === ingName);
 
 		if (!drinkIngredient) return;
 
-		const existing = addedIngredients.find(ing => ing.name === ingName);
+		const existing = BarStore.addedIngredients.find(ing => ing.name === ingName);
 
 		let updatedIngredients: Ingredient[];
 
@@ -66,7 +57,7 @@ export default function Challenge() {
 				return;
 			}
 
-			updatedIngredients = addedIngredients.map(ing =>
+			updatedIngredients = BarStore.addedIngredients.map(ing =>
 				ing.name === ingName ? { ...ing, amount: newAmount } : ing
 			);
 
@@ -78,46 +69,44 @@ export default function Challenge() {
 				return;
 			}
 
-			updatedIngredients = [...addedIngredients, { name: ingName, amount: 25 }];
+			updatedIngredients = [...BarStore.addedIngredients, { name: ingName, amount: 25 }];
 		}
 
-		setAddedIngredients(updatedIngredients);
+		BarStore.setAddedIngredients(updatedIngredients);
 
 		// Check if all ingredients have at least the required amount
-		const allComplete = drink.ingredients.every(ing =>
+		const allComplete = BarStore.drink.ingredients.every(ing =>
 			updatedIngredients.some(ai => ai.name === ing.name && ai.amount >= ing.amount)
 		);
 
 		if (allComplete) {
-			setPhase("ice");
+			BarStore.setPhase("ice");
 		}
 	}
 
 	function handleAddIce() {
-		if (phase == "ice") {
-			setAddedIce(true)
+		if (BarStore.phase == "ice") {
+			BarStore.setAddedIce(true)
 		}
 	}
 
   function handleClose() {
-		setPhase("shake")
+		BarStore.setPhase("shake")
 	}
 
 	function handleShakeStart() {
-		setIsHolding(true)
+		BarStore.setIsHolding(true)
 
 		if (shakeInterval.current) return 
 		
 		shakeInterval.current = setInterval(() => {
-			setShakeCount((prev) => {
-				return prev+1
-			})
+			BarStore.incrementShakeCount()
 		}
 		, 750)
 	}
 
   function handleShakeEnd() {
-		setIsHolding(false)
+		BarStore.setIsHolding(false)
 
 		if (shakeInterval.current) {
 			clearTimeout(shakeInterval.current)
@@ -126,23 +115,23 @@ export default function Challenge() {
 	}
 
 	function handleFill() {
-		setFillGlass(true)
+		BarStore.setFillGlass(true)
 	}
 
   function handleReset() {
-		setToggleReset(true)
-		setPhase("ingredients")
-		setAddedIngredients([])
-		setAddedIce(false)
-		setIsMixed(false)
-		setIsHolding(false)
-		setShakeCount(0)
-		setTinReset(false)
-		setFillGlass(false)
+		BarStore.setToggleResetDrink(true)
+		BarStore.setPhase("ingredients")
+		BarStore.setAddedIngredients([])
+		BarStore.setAddedIce(false)
+		BarStore.setIsMixed(false)
+		BarStore.setIsHolding(false)
+		BarStore.resetCount()
+		BarStore.setTinReset(false)
+		BarStore.setFillGlass(false)
 	}
 
   function changeDrink(changeTo: string) {
-		if (!(changeTo === drink?.id)) {
+		if (!(changeTo === BarStore.drink?.id)) {
 			handleReset()
 			BarStore.setDrink(drinks[drinks.findIndex((drk) => (
 				drk.id === changeTo
@@ -160,39 +149,27 @@ export default function Challenge() {
 			
 			<BarBack />
 
-			<div className="absolute w-full h-10 flex justify-between">
-			<button className=""
-				onClick={() => handleReset()}>
-				reset
-			</button>
-			<button className=""
-				onClick={() => changeDrink("margarita")}>
-				Margarita
-			</button>
-			<button className=""
-				onClick={() => changeDrink("daiquiri")}>
-				Daquiri
-			</button>
-							<button className=""
-				onClick={() => changeDrink("sidecar")}>
-				Sidecar
-			</button>
+			<div className="absolute w-full h-[18%] -top-[2%] px-[2%] flex justify-between gap-[2%]">
+			<GlassButton text="reset" action={() => handleReset()}/>
+			<GlassButton text="margarita" action={() => changeDrink("margarita")}/>
+			<GlassButton text="daiquiri" action={() => changeDrink("daiquiri")}/>
+			<GlassButton text="pornstar" action={() => changeDrink("pornstarmartini")}/>
 		</div>
 			
 			{/* Bar Top */}
 			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#310101] flex justify-center items-end gap-[10%]">
 
-				{phase=="glass" && tinReset &&
+				{BarStore.phase=="glass" && BarStore.tinReset &&
 				/* Glass */
 			  <motion.button className="absolute"
 					initial={{ left: "-100%"}}
-					animate={fillGlass ? { left: "40%" } : { left: "20%" }}
+					animate={BarStore.fillGlass ? { left: "40%" } : { left: "20%" }}
 					onClick={() => handleFill()}>
         <Glass >
-					{fillGlass && 
+					{BarStore.fillGlass && 
 					<div className="absolute bottom-0 top-[6%] w-full"
 						style={{
-							backgroundColor: drink.color
+							backgroundColor: BarStore.drink.color
 						}}>
 						
 					</div>
@@ -203,16 +180,16 @@ export default function Challenge() {
 				
 				{true &&
 					/* Tin */
-				<Tin toggleReset={toggleReset} setToggleReset={setToggleReset} phase={phase} isHolding={isHolding} addedIngredients={addedIngredients} addedIce={addedIce} isMixed={isMixed} fillGlass={fillGlass} setTinReset={setTinReset}/>
+				<Tin />
 					}
 					
-				{addedIce && (phase=="ice") &&
+				{BarStore.addedIce && (BarStore.phase=="ice") &&
 				/* Tin Top */
 				<motion.button 
 					className="absolute w-[20%] aspect-3/4 bg-neutral-400 clip-tin"
 					onClick={() => handleClose()}
 					initial={{ right: '-20%' }}
-					animate={addedIce ? { right: '10%' } : {}}
+					animate={BarStore.addedIce ? { right: '10%' } : {}}
 					transition={{ duration: 1 }}
 					/>
 				}
@@ -221,17 +198,17 @@ export default function Challenge() {
 			{/* Bar Interface */}
 			<div className="relative w-full flex-1 px-[5%] flex justify-between items-end">
 
-				{!(phase=="shake") ? 
+				{!(BarStore.phase=="shake") ? 
 				<>
 					{/* Speed Rail */}
 			  <div className="relative w-[60%] h-[80%] mb-[5%] flex items-end gap-[1%]">
 					
 					{/* Bottles */}
-					{drink?.ingredients.map( (ing, i) => (
+					{BarStore.drink?.ingredients.map( (ing, i) => (
 			      <button key={i} className="w-[23%] mb-[20%]"
-							style={addedIngredients.find((i) => i.name === ing.name)?.amount===drink.ingredients.find((i) => i.name === ing.name)?.amount ? {height:"50%"} : {height:"70%"}}
+							style={BarStore.addedIngredients.find((i) => i.name === ing.name)?.amount===BarStore.drink.ingredients.find((i) => i.name === ing.name)?.amount ? {height:"50%"} : {height:"70%"}}
 							onClick={() => handleAddIngredient(ing.name)}>
-			      <Bottle caption={drink.ingredients[i].name}/>
+			      <Bottle caption={BarStore.drink.ingredients[i].name}/>
 						</button>
 					))}
 
@@ -250,13 +227,13 @@ export default function Challenge() {
 				style={{ 
 				userSelect: "none",
 				WebkitUserSelect: "none",
-				fontSize: `${isHolding ? 24+(shakeCount*6) : 24 }px`
+				fontSize: `${BarStore.isHolding ? 24+(BarStore.shakeCount*6) : 24 }px`
 				}}
 				onTouchStart={() => handleShakeStart()}
 				onTouchEnd={() => handleShakeEnd()}
 				>
 
-			{isHolding ? `${shakeCount}` : "Hold to shake"}
+			{BarStore.isHolding ? `${BarStore.shakeCount}` : "Hold to shake"}
 			</button>
 			
 			}

@@ -5,23 +5,11 @@ import { ingredientData } from '@/lib/drinks'
 
 import { Drink, Ingredient } from '@/types/drinkTypes'
 
-import {barStore} from '@/stores/barStore'
-
-{/* Types */}
-interface TinProps {
-	toggleReset: boolean,
-	setToggleReset: React.Dispatch<React.SetStateAction<boolean>>,
-	phase: string,
-	isHolding: boolean,
-	addedIngredients: Ingredient[],
-	addedIce: boolean,
-	isMixed: boolean,
-	fillGlass: boolean,
-	setTinReset: React.Dispatch<React.SetStateAction<boolean>>,
-}
+import { barStore } from '@/stores/barStore'
 
 
-export default function Tin({ toggleReset, setToggleReset, phase, isHolding, addedIngredients, addedIce, isMixed, fillGlass, setTinReset}: TinProps) {
+
+export default function Tin() {
   const BarStore = barStore()
 	
 	const [showLiquid, setShowLiquid] = useState(true)
@@ -36,47 +24,47 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 			tinControls.set({y: 10})
 			await tinControls.start({opacity: 1, y: 0, transition:{duration: .5}})
 		}
-		if (toggleReset) {
+		if (BarStore.toggleResetDrink) {
 		 replaceTin()
-		 setToggleReset(false)
+		 BarStore.setToggleResetDrink(false)
 		}
-	}, [toggleReset])
+	}, [BarStore.toggleResetDrink])
 	
   useEffect(() => {
 		async function shakeSequence() {
 			setShowLiquid(false)
 		  await tinControls.start("shrink")
-			if (isHolding) {
+			if (BarStore.isHolding) {
 				await tinControls.start({rotate: [0,45], y:[0,-60], x:0, transition: { duration: .5 } })
 			  tinControls.start("shake")
-			} else {
+			} if (!BarStore.isHolding) {
 				tinControls.stop()
 				tinControls.start({rotate: 0, y:0, x:0})
 			}
 		}
 
-		if (phase=="shake") {
+		if (BarStore.phase=="shake") {
 		  shakeSequence()
 		} 
 
-	}, [phase, isHolding])
+	}, [BarStore.phase, BarStore.isHolding])
 
 	useEffect(() => {
 		async function resetTin() {
-		if (isMixed) {
+		if (BarStore.isMixed) {
 			tinControls.stop()
 			await tinControls.start({rotate: 0, y:0, x:0, transition: {duration: 1}})
 			await tinControls.start({width: "30vw", transition: { duration: 1 }})
 			setShowLiquid(true)
-			setTinReset(true)
+			BarStore.setTinReset(true)
 			tinControls.start({x: "20vw"})
 		}}
 		resetTin()
-	}, [isMixed])
+	}, [BarStore.isMixed])
 
 	useEffect(() => {
 	  async function Strain() {
-			if (fillGlass) {
+			if (BarStore.fillGlass) {
 				tinControls.start("pour")
 				await liquidControls.start("straining")
 				tinControls.start({left: "100%"})
@@ -85,14 +73,14 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 
 		Strain()
 		
-	}, [fillGlass])
+	}, [BarStore.fillGlass])
 	
 	{/* Animations */}
 	const liquidVariants = {
 		"hidden": { height: 0 },
 		"pouring": { height: '10%', transition: { duration: .5 }},
 		"bobbing": { 
-			height: `${1/addedIngredients.length*80}%`,
+			height: `${1/BarStore.addedIngredients.length*80}%`,
 			y: [0,'1%',0],
 			transition: { 
 				height: { duration: 1 },
@@ -148,7 +136,7 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 			animate={tinControls}
 			>
 
-		{(phase=="shake") &&
+		{(BarStore.phase=="shake") &&
 		/* Lid */
 		<motion.div className="absolute w-[90%] aspect-3/4 bg-neutral-400 clip-tin"
 			variants={lidVariants}
@@ -167,7 +155,7 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 
 				
 				{/* Liquid Layers */}
-				{isMixed ? 
+				{BarStore.isMixed ? 
 						<motion.div
 							className="w-full h-[80%] translate-y-[3%]"
 							style={{
@@ -178,7 +166,7 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 							animate={liquidControls}
 						/>
 					: 
-				addedIngredients?.map((ing, index) => (
+				BarStore.addedIngredients?.map((ing, index) => (
 					<motion.div
 						key={index}
 						className="w-full"
@@ -187,9 +175,9 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 						}}
 						variants={liquidVariants}
 						initial={{ height: 0 }}
-						animate={addedIce? 
+						animate={BarStore.addedIce? 
 							{ 
-								height: `${ing.amount/1.2}%`,
+								height: `${ing.amount/1.5}%`,
 								y: [0,'1%',0],
 								transition: { 
 									height: { duration: 1 },
@@ -201,7 +189,7 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 				))}
 
 					{/* Ice Cubes */}
-					{addedIce &&
+					{BarStore.addedIce &&
 						Array.from({ length: 8 }).map((_, index) => {
 							const left = 10 + Math.random() * 50;
 							const size = 30 + Math.random() * 10;
@@ -219,7 +207,7 @@ export default function Tin({ toggleReset, setToggleReset, phase, isHolding, add
 										height: `${size}%`,
 										bottom: startBottom,
 									}}
-									animate={isMixed ? {
+									animate={BarStore.isMixed ? {
 										opacity: 1,
 										y: [0, 6, 0]               
 									}	: {

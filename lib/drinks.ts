@@ -34,15 +34,34 @@ export const drinks = [
 			{"name": "Lemon Juice", "amount": 25 }
 		],
 		color: "#ffc18f"
+	},
+	{
+		id: "pornstarmartini",
+		name: "Pornstar Martini",
+		method: "shake",
+		glass: "🍸",
+		ingredients: [
+			{"name": "Vodka", "amount": 50 },
+			{"name": "Passion. Liquer", "amount": 25 },
+			{"name": "Passion. Puree", "amount": 25 },
+			{"name": "Lime Juice", "amount": 25 },
+		],
+		color: "#F2BB63"
 	}
 	]
 
 export const ingredientData = [
-	{"name": "Lime Juice", "color": "#D1FFCC", "bottleHeight": "70%"},
-	{"name": "Lemon Juice", "color": "#FFFFCC", "bottleHeight": "70%"},
+		
+  {"name": "Vodka", "color": "#DDDDFF", "bottleHeight": "70%"},
 	{"name": "Tequila", "color": "#D4D5D2", "bottleHeight": "60%"},
 	{"name": "Rum", "color": "#FFFFFF", "bottleHeight": "60%"},
 	{"name": "Cognac", "color": "#FFaaaa", "bottleHeight": "60%"},
+	
 	{"name": "Triple Sec", "color": "#FFDAAB", "bottleHeight": "50%"},
+  {"name": "Passion. Liquer", "color": "#F2BB63", "bottleHeight": "50%" },
+
+	{"name": "Lime Juice", "color": "#D1FFCC", "bottleHeight": "70%"},
+	{"name": "Lemon Juice", "color": "#FFFFCC", "bottleHeight": "70%"},
 	{"name": "Sugar Syrup", "color": "#D4D5D2", "bottleHeight": "70%"},
+	{"name": "Passion. Puree", "color": "#F2BB63", "bottleHeight": "60%"},
 ]
