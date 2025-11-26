@@ -8,7 +8,7 @@ interface Props {
 
 export default function GlassImage({text, action}: Props) {
 	return (
-		<button className="relative w-1/4 h-full flex justify-center"
+		<button className="relative w-[25vw] h-full flex justify-center"
 			onClick={action}>
 			<Image
 				src="/bar-sim/bgCoupe.svg"

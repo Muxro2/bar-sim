@@ -10,6 +10,7 @@ import GlassButton from '@/components/ui/GlassButton'
 
 import Bottle from '@/components/bar/Bottle'
 import Tin from '@/components/bar/Tin'
+import Jug from '@/components/bar/Jug'
 import IceBucket from '@/components/bar/IceBucket'
 import Glass from '@/components/bar/Glass'
 import CustomConsole from '@/components/dev/CustomConsole'
@@ -149,12 +150,16 @@ export default function Challenge() {
 			
 			<BarBack />
 
-			<div className="absolute w-full h-[18%] -top-[2%] px-[2%] flex justify-between gap-[2%]">
+			<div className="absolute w-full h-[18%] -top-[2%] overflow-scroll no-scrollbar">
+			<div className="w-fit h-full px-[2%] flex gap-[2%]">
 			<GlassButton text="reset" action={() => handleReset()}/>
 			<GlassButton text="margarita" action={() => changeDrink("margarita")}/>
 			<GlassButton text="daiquiri" action={() => changeDrink("daiquiri")}/>
 			<GlassButton text="pornstar" action={() => changeDrink("pornstarmartini")}/>
+			<GlassButton text="negroni" action={() => changeDrink("negroni")}/>
+			<GlassButton text="sidecar" action={() => changeDrink("sidecar")}/>
 		</div>
+			</div>
 			
 			{/* Bar Top */}
 			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#310101] flex justify-center items-end gap-[10%]">
@@ -178,9 +183,13 @@ export default function Challenge() {
 				</motion.button>
 				}
 				
-				{true &&
+				{BarStore.drink.method=="shake" &&
 					/* Tin */
 				<Tin />
+					}
+				{BarStore.drink.method=="stir" &&
+					/* Jug */
+				<Jug />
 					}
 					
 				{BarStore.addedIce && (BarStore.phase=="ice") &&
