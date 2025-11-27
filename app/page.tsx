@@ -217,7 +217,7 @@ export default function Challenge() {
 					{BarStore.drink?.ingredients.map( (ing, index) => (
 			      <button key={index} className="w-[23%]"
 							style={BarStore.addedIngredients.find((i) => i.name === ing.name)?.amount === BarStore.drink.ingredients.find((i)=>i.name===ing.name)?.amount
-							? { height: `${ingredientData.find((ingredient) => ingredient.name === ing.name)?.bottleHeight*0.8}%`}
+							? { height: "50%"}
 							: { height: `${ingredientData.find((ingredient) => ingredient.name === ing.name)?.bottleHeight}%`} }
 							onClick={() => handleAddIngredient(ing.name)}>
 			      <Bottle caption={BarStore.drink.ingredients[index].name}/>
