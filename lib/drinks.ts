@@ -62,22 +62,28 @@ export const drinks = [
 	}
 	]
 
-export const ingredientData = [
+interface IngredientDataType {
+	name: string,
+	color: string,
+	bottleHeight: number,
+}
+
+export const ingredientData: IngredientDataType[] = [
 		
-  {"name": "Vodka", "color": "#DDDDFF", "bottleHeight": "70%"},
-	{"name": "Tequila", "color": "#D4D5D2", "bottleHeight": "60%"},
-	{"name": "Rum", "color": "#FFFFFF", "bottleHeight": "60%"},
-	{"name": "Cognac", "color": "#FFaaaa", "bottleHeight": "60%"},
-	{"name": "Gin", "color": "#eeffee", "bottleHeight": "65%"},
+  {"name": "Vodka", "color": "#DDDDFF", "bottleHeight": 100},
+	{"name": "Tequila", "color": "#D4D5D2", "bottleHeight": 80},
+	{"name": "Rum", "color": "#FFFFFF", "bottleHeight": 90},
+	{"name": "Cognac", "color": "#FFaaaa", "bottleHeight": 80},
+	{"name": "Gin", "color": "#eeffee", "bottleHeight": 80},
 	
-	{"name": "Triple Sec", "color": "#FFDAAB", "bottleHeight": "50%"},
-  {"name": "Vermouth", "color": "#ffeedd", "bottleHeight": "60%"},
-	{"name": "Campari", "color": "#FFaaaa", "bottleHeight": "60%"},
-	{"name": "Passion. Liquer", "color": "#F2BB63", "bottleHeight": "50%" },
+	{"name": "Triple Sec", "color": "#FFDAAB", "bottleHeight": 80},
+  {"name": "Vermouth", "color": "#ffeedd", "bottleHeight": 100},
+	{"name": "Campari", "color": "#FFaaaa", "bottleHeight": 100},
+	{"name": "Passion. Liquer", "color": "#FFddbb", "bottleHeight": 90 },
 
 	
-	{"name": "Lime Juice", "color": "#D1FFCC", "bottleHeight": "70%"},
-	{"name": "Lemon Juice", "color": "#FFFFCC", "bottleHeight": "70%"},
-	{"name": "Sugar Syrup", "color": "#D4D5D2", "bottleHeight": "70%"},
-	{"name": "Passion. Puree", "color": "#F2BB63", "bottleHeight": "60%"},
+	{"name": "Lime Juice", "color": "#D1FFCC", "bottleHeight": 100},
+	{"name": "Lemon Juice", "color": "#FFFFCC", "bottleHeight": 100},
+	{"name": "Sugar Syrup", "color": "#D4D5D2", "bottleHeight": 100},
+	{"name": "Passion. Puree", "color": "#F2BB63", "bottleHeight": 90},
 ]

@@ -7,13 +7,19 @@ export default function Bottle({ caption }: {caption: string}) {
 	const color = ingredientData.find((ing) => ing.name === caption)?.color
 	
 	return (
-		<div className="w-full h-full -z-1 flex flex-col justify-end">
-			<div className="w-[40%] h-[30%] mx-auto rounded-[10%_10%_0%_0%] border-1 border-black/20"
+		<div className="relative w-full h-full flex flex-col">
+			<div className="w-[4vw] h-[5vh] mx-auto translate-y-[1vh]"
 			style={{ backgroundColor: color }}/>
-		  <div className="w-full -translate-y-[1%] rounded-[30%_30%_0%_0%] flex items-center overflow-hidden border-1 border-black/30"
-			style={{ height: height, backgroundColor: color }}>
-      <h1 className="-rotate-30 text-xl font-bold text-black/30">{caption}</h1>
-			</div>
+			
+		  <div className="relative w-full h-full rounded-[30px_30px_0%_0%] flex justify-end items-end overflow-hidden"
+			style={{ backgroundColor: color }}>
+			<div className='absolute inset-1 rounded-[30px_30px_0_0] bg-white'/>
+			<div className='absolute inset-1 right-2 rounded-[30px_30px_0%_0%]'
+				style={{ backgroundColor: color }}/>
+
+      <h1 className="absolute bottom-0 left-[50%] -rotate-90 origin-left text-md text-left font-roboto leading-[1em] text-black/30 z-10">{caption}</h1>
+				</div>
+				
 		</div>
 	)
 }

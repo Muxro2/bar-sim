@@ -210,18 +210,22 @@ export default function Challenge() {
 				{!(BarStore.phase=="shake") ? 
 				<>
 					{/* Speed Rail */}
-			  <div className="relative w-[60%] h-[80%] mb-[5%] flex items-end gap-[1%]">
+				<div className="w-[60%] h-[90%] flex flex-col justify-end">
+			  <div className="relative h-[60%] flex items-end gap-[1%]">
 					
 					{/* Bottles */}
-					{BarStore.drink?.ingredients.map( (ing, i) => (
-			      <button key={i} className="w-[23%] mb-[20%]"
-							style={BarStore.addedIngredients.find((i) => i.name === ing.name)?.amount===BarStore.drink.ingredients.find((i) => i.name === ing.name)?.amount ? {height:"50%"} : {height:"70%"}}
+					{BarStore.drink?.ingredients.map( (ing, index) => (
+			      <button key={index} className="w-[23%]"
+							style={BarStore.addedIngredients.find((i) => i.name === ing.name)?.amount === BarStore.drink.ingredients.find((i)=>i.name===ing.name)?.amount
+							? { height: `${ingredientData.find((ingredient) => ingredient.name === ing.name)?.bottleHeight*0.8}%`}
+							: { height: `${ingredientData.find((ingredient) => ingredient.name === ing.name)?.bottleHeight}%`} }
 							onClick={() => handleAddIngredient(ing.name)}>
-			      <Bottle caption={BarStore.drink.ingredients[i].name}/>
+			      <Bottle caption={BarStore.drink.ingredients[index].name}/>
 						</button>
 					))}
 
-					<div className="absolute w-full h-[30%] bg-[#310101] rounded-[0%_0%_10px_10px] flex" />
+				</div>
+					<div className="w-full h-[30%] mb-[10%] bg-[#310101] rounded-[0%_0%_10px_10px] flex" />
 					
 				</div>
 				

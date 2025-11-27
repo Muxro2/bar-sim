@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 
 @tailwind base;
@@ -7,6 +8,11 @@
 :root {
   --background: #210101;
   --foreground: #ffffff;
+}
+
+.font-roboto {
+  font-family: "Quicksand", sans-serif;
+  font-style: normal;
 }
 
 @utility no-scrollbar {
@@ -23,77 +29,6 @@
     clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
   }
 
-
-
-  @keyframes pourIng {
-    0% { height: 0%; }
-    100% { height: 10%; }
-  }
-
-  @keyframes drop {
-    0% { transform: translateY(-40px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1;  }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px) rotate(-10deg); }
-  }
-  @keyframes float-2 {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(10px) rotate(5deg); }
-  }
-
-  @keyframes lid-close {
-    0%{ transform: translateY(100px) rotate(0deg); }
-    100% { transform: translateY(0px) rotate(0deg); }
-  }
-
-  @keyframes zoom-out-tin {
-    0% { transform: scale(1); }
-    100% { transform: scale(0.5); }
-  }
-  @keyframes shake-tin {
-  0%   { transform: rotate(45deg) translate(0, 0) scale(0.5); }
-  10%  { transform: rotate(51deg) translate(4px, -6px) scale(0.5); }
-  20%  { transform: rotate(39deg) translate(-4px, 6px) scale(0.5); }
-  30%  { transform: rotate(51deg) translate(5px, -8px) scale(0.5); }
-  40%  { transform: rotate(39deg) translate(-5px, 8px) scale(0.5); }
-  50%  { transform: rotate(49deg) translate(3px, -6px) scale(0.5); }
-  60%  { transform: rotate(41deg) translate(-3px, 6px) scale(0.5); }
-  70%  { transform: rotate(47deg) translate(2px, -4px) scale(0.5); }
-  80%  { transform: rotate(43deg) translate(-2px, 4px) scale(0.5); }
-  90%  { transform: rotate(45deg) translate(0, 0) scale(0.5); }
-  100% { transform: rotate(45deg) translate(0, 0) scale(0.5); }
-}
-
-
-  
-  .animate-pourIng {
-    animation: pourIng 2s;
-  }
-
-  
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
-  }
-  .animate-float-2 {
-    animation: float-2 4s ease-in-out infinite;
-  }
-  .animate-drop-float {
-    animation:
-      drop 0.6s ease-out forwards,
-      float 4s ease-in-out 0.6s infinite;
-  }
-
-  .animate-lid-close {
-    animation: lid-close 2s forwards;
-  }
-
-
-  .animate-shake-zoom {
-    animation: zoom-out-tin 2s linear forwards,
-    shake-tin 1s linear 2s infinite;
-  }
 }
 
 @theme {
@@ -110,8 +45,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
