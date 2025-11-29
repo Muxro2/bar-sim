@@ -55,8 +55,8 @@ export default function Person() {
 			initial="initial"
 			animate={personController}
 			>
-			<div className="w-full aspect-1/1 bg-[#210101] rounded-full translate-y-1"/>
-			<div className="flex-1 w-full bg-[#210101] rounded-t-[100%]"/>
+			<div className="w-full aspect-1/1 bg-[#310101] rounded-full translate-y-1"/>
+			<div className="flex-1 w-full bg-[#310101] rounded-t-[100%]"/>
 		</motion.div>
   )
 }

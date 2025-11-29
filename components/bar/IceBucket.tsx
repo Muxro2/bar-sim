@@ -17,7 +17,7 @@ export default function IceBucket() {
 					</div>
 					))}
 						
-					<div className="w-full h-[70%] bg-[#310101] rounded-[10px] clip-bucket"/>
+					<div className="w-full h-[70%] bg-[#710101] rounded-[10px] clip-bucket"/>
 
 					
 				</div>

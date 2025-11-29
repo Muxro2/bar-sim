@@ -162,7 +162,7 @@ export default function Challenge() {
 			</div>
 			
 			{/* Bar Top */}
-			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#310101] flex justify-center items-end gap-[10%]">
+			<motion.div className="relative w-full h-[10%] pb-[10%] bg-[#610101] flex justify-center items-end gap-[10%]">
 
 				{BarStore.phase=="glass" && BarStore.tinReset &&
 				/* Glass */
@@ -205,7 +205,7 @@ export default function Challenge() {
 			</motion.div>
 
 			{/* Bar Interface */}
-			<div className="relative w-full flex-1 px-[5%] flex justify-between items-end">
+			<div className="relative w-full flex-1 px-[5%] bg-[#410101] flex justify-between items-end">
 
 				{!(BarStore.phase=="shake") ? 
 				<>
@@ -225,7 +225,7 @@ export default function Challenge() {
 					))}
 
 				</div>
-					<div className="w-full h-[30%] mb-[10%] bg-[#310101] rounded-[0%_0%_10px_10px] flex" />
+					<div className="w-full h-[30%] mb-[10%] bg-[#710101] rounded-[0%_0%_10px_10px] flex" />
 					
 				</div>
 				

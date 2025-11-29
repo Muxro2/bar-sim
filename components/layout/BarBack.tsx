@@ -9,8 +9,8 @@ export default function BarBack() {
 		
 
 			{/* Shelves */}
-			<div className=" w-[80%] h-2 mx-auto mt-[30%] bg-[#210101]"></div>
-			<div className=" w-[70%] h-2 mx-auto mt-15 bg-[#210101]"></div>
+			<div className=" w-[80%] h-2 mx-auto mt-[30%] bg-[#310101]"></div>
+			<div className=" w-[70%] h-2 mx-auto mt-15 bg-[#310101]"></div>
 
 			{/* Person */}
 			{Array.from({ length: 3}).map((_, i) => (
